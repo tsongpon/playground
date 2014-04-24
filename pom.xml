@@ -32,13 +32,6 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!-- Require by Spring -->
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-
     </dependencies>
     <build>
         <finalName>hellospringmvc</finalName>
