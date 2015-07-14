@@ -1,5 +1,8 @@
 <html>
+<head>
+    <title></title>
+</head>
 <body>
-<h2>Hello World!</h2>
+<h1>Hello from Spring MVC</h1>
 </body>
 </html>
