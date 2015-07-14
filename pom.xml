@@ -8,7 +8,8 @@
     <name>hellospringmvc Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <properties>
-        <spring.version>4.0.3.RELEASE</spring.version>
+        <spring.version>4.1.7.RELEASE</spring.version>
+        <freemarker.version>2.3.22</freemarker.version>
     </properties>
 
     <dependencies>
@@ -32,9 +33,15 @@
             <version>${spring.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+        </dependency>
+
     </dependencies>
     <build>
-        <finalName>hellospringmvc</finalName>
+        <finalName>playground</finalName>
 
         <plugins>
             <plugin>
@@ -42,8 +49,8 @@
                 <version>2.5.1</version>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 
@@ -66,19 +73,16 @@
 
             <!--use maven jetty plugin for let us can run embed jetty, no need any more setup-->
             <plugin>
-                <groupId>org.mortbay.jetty</groupId>
+                <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>8.1.14.v20131031</version>
+                <version>9.2.10.v20150310</version>
                 <configuration>
                     <webApp>
                         <contextPath>/playground</contextPath>
                     </webApp>
-                    <connectors>
-                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                            <!--use port 9000 for run our app-->
-                            <port>9000</port>
-                        </connector>
-                    </connectors>
+                    <httpConnector>
+                        <port>9000</port>
+                    </httpConnector>
                 </configuration>
             </plugin>
 
