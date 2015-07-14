@@ -1,4 +1,4 @@
-hellospringmvc
+Playground
 ==============
 
-spring mvc simple application
+
