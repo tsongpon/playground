@@ -5,8 +5,8 @@
          metadata-complete="true"
          version="2.5" id="frontgrabber">
 
-    <display-name>hellospringmvc</display-name>
-    <description>hellospringmvc web app</description>
+    <display-name>playground</display-name>
+    <description>playground web app</description>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -20,8 +20,8 @@
     </listener>
 
     <servlet>
-        <description>Spring dispatcher for frontgrabber</description>
-        <servlet-name>hellospringmvc</servlet-name>
+        <description>Spring dispatcher for playground</description>
+        <servlet-name>playground</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
@@ -31,7 +31,7 @@
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>hellospringmvc</servlet-name>
+        <servlet-name>playground</servlet-name>
         <url-pattern>*.html</url-pattern>
     </servlet-mapping>
 

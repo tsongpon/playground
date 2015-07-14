@@ -2,17 +2,9 @@
 *.ipr
 *.iws
 target/
+bin
 .idea/
 .project
 .classpath
 .settings
-*.class
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
+.DS_Store

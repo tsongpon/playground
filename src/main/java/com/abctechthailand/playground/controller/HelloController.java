@@ -1,4 +1,4 @@
-package com.outlawman.hellospringmvc.controller;
+package com.abctechthailand.playground.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
