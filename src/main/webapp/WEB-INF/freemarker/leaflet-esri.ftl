@@ -34,8 +34,10 @@
   L.esri.basemapLayer('Streets').addTo(map);
   var stops=L.esri.clusteredFeatureLayer({
      /* url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0',*/
-      url:'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/prospectous/FeatureServer/0',
+      url:'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/propectous/FeatureServer/0',
       spiderfyOnMaxZoom:true,
+      showCoverageOnHover:true,
+      animateAddingMarkers:true,
      /* disableClusteringAtZoom: 16,*/
       polygonOptions: {
           color: '#2d84c8',

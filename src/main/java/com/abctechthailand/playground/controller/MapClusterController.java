@@ -6,9 +6,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class MapClusterController {
-    @RequestMapping("pointcluster.html")
+    @RequestMapping("pointcluster0.html")
     public String renderPointCluster(Model model) {
         return "pointcluster";
+    }
+    @RequestMapping("pointcluster1.html")
+    public String renderPointClusterESRI(Model model) {
+        return "pointcluster-esri";
     }
     @RequestMapping("markercluster0.html")
     public String renderLeafletMarkerClusterOrigin(Model model) {

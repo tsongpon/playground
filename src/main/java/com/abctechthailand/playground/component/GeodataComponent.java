@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 public class GeodataComponent {
 
-    private static final String FEATURESERVICEURI="http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/prospectous/FeatureServer/0/addFeatures";
+    private static final String FEATURESERVICEURI="http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/propectous/FeatureServer/0/addFeatures";
     private static final String PROSPECTOUSURI="http://bearing:9093/api/pipek/v1/ads/search/?pretty=true&q=*&fields=id,title,media.reference,attributes.mapcoordinatelat,attributes.mapcoordinatelon&size=200";
     public void addFeature(String features){
         Client client = Client.create();
@@ -81,7 +81,7 @@ public class GeodataComponent {
     }
 
     public String getFeatures(JsonNode fieldsObj){
-        Integer id=fieldsObj.get("id").get(0).asInt();
+        String id=fieldsObj.get("id").get(0).asText();
         String title=fieldsObj.get("title").get(0).asText();
         Double lon=null;
         Double lat=null;
@@ -97,7 +97,7 @@ public class GeodataComponent {
         }
 
         if(lat!=null&lon!=null){
-            String feature="[{'geometry' : {'x' : "+lon+", 'y' :"+lat+"},  'attributes' : {'id' :"+id+",'title' : '"+title+"','image' : '"+media_references+"'}}]";
+            String feature="[{'geometry' : {'x' : "+lon+", 'y' :"+lat+"},  'attributes' : {'id' :'"+id+"','title' : '"+title+"','image' : '"+media_references+"'}}]";
             return  feature;
         }
         return null;

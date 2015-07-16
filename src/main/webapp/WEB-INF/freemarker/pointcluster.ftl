@@ -72,7 +72,7 @@
           "marginTop": "20"
         };
         map = new Map("map", {
-          basemap: "oceans",
+          basemap: "streets",
           center: [-117.789, 33.543],
           zoom: 13
         });
