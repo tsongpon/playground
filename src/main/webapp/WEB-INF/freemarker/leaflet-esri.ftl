@@ -7,7 +7,7 @@
   <!-- Load Leaflet from CDN-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/0.7.3/leaflet.css" />
   <script src="https://cdn.jsdelivr.net/leaflet/0.7.3/leaflet.js"></script>
-    <link rel="stylesheet" href="css/screen.css" />
+   <!-- <link rel="stylesheet" href="css/screen.css" />-->
   <!-- Load Esri Leaflet from CDN -->
   <script src="https://cdn.jsdelivr.net/leaflet.esri/1.0.0/esri-leaflet.js"></script>
 
@@ -36,15 +36,18 @@
      /* url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0',*/
       url:'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/propectous/FeatureServer/0',
       spiderfyOnMaxZoom:true,
+      maxClusterRadius:100,
+      removeOutsideVisibleBounds:true
+      /*spiderfyOnMaxZoom:false,
       showCoverageOnHover:true,
       animateAddingMarkers:true,
-     /* disableClusteringAtZoom: 16,*/
+      disableClusteringAtZoom: 10,
       polygonOptions: {
           color: '#2d84c8',
           weight: 4,
           opacity: 1,
           fillOpacity: 0.5
-      },
+      },*/
     /*url:'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/test/FeatureServer/0'*/
     /*url:'http://services6.arcgis.com/MPFq870JSx7gki1d/ArcGIS/rest/services/example/FeatureServer/0'*/
   }).addTo(map);
