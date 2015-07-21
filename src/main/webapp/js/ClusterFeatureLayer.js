@@ -222,7 +222,7 @@ define([
 
     _getRenderedSymbol: function(feature) {
       var attr = feature.attributes;
-      if (attr.clusterCount === 1) {
+      if (attr.clusterCount === 1||attr.clusterCount==attr.sameLocationCount) {
         if (!this._useDefaultSymbol) {
           return this._singleSym;
         }
@@ -270,11 +270,11 @@ define([
                 );
                 var renderer = new ClassBreaksRenderer(this._singleSym, 'clusterCount');
 
-                var small = new sms('circle', 20,
+                var small = new sms('circle', 30,
                             new sls(sls.STYLE_SOLID, new Color([255,125,0,0.25]), 10),
                             new Color([255,125,0,0.5]));
 
-                var medium = new sms('circle', 30,
+                var medium = new sms('circle', 40,
                               new sls(sls.STYLE_SOLID, new Color([255,0,250,0.25]), 10),
                               new Color([255,0,250,0.5]));
                 var large = new sms('circle', 50,
@@ -485,7 +485,7 @@ define([
       this._onClusterClick(e);
       // zoom in to cluster if possible
       if(
-        this._zoomOnClick &&
+        this._zoomOnClick &&e.graphic.attributes.clusterCount!=e.graphic.attributes.sameLocationCount&&
           e.graphic.attributes.clusterCount > 1 &&
             this._map.getZoom() !== this._map.getMaxZoom()
       ) {
@@ -560,6 +560,10 @@ define([
       // average in the new point to the cluster geometry
       var count, x, y;
       count = cluster.attributes.clusterCount;
+      if(p.x==cluster.x&& p.y==cluster.y){
+        cluster.attributes.sameLocationCount++;
+      }
+
       x = (p.x + (cluster.x * count)) / (count + 1);
       y = (p.y + (cluster.y * count)) / (count + 1);
       cluster.x = x;
@@ -578,8 +582,10 @@ define([
         cluster.attributes.extent[3] = p.y;
       }
 
+
       // increment the count
       cluster.attributes.clusterCount++;
+
       // attributes might not exist
       if ( ! p.hasOwnProperty('attributes') ) {
         p.attributes = {};
@@ -605,6 +611,7 @@ define([
         'y': p.y,
         'attributes' : {
           'clusterCount': 1,
+          'sameLocationCount':1,
           'clusterId': clusterId,
           'extent': [ p.x, p.y, p.x, p.y ]
         }
@@ -628,7 +635,6 @@ define([
     _showCluster: function(c) {
       var point = new Point(c.x, c.y, this._sr);
       var count = c.attributes.clusterCount;
-
       var g = new Graphic(point, null, c.attributes);
       g.setSymbol(this._getRenderedSymbol(g));
       this.add(g);

@@ -10,7 +10,7 @@
       html, body { height: 100%; width:100%; margin: 0; padding: 0; }
       #map{ margin: 0; padding: 0; }
 
-      /* center the image in the popup */
+      /* center the image in the  */
       .esriViewPopup .gallery { margin: 0 auto !important; }
       /* CSS for Cluster Layer */
       #clusters_layer > circle { cursor: pointer; }
@@ -18,8 +18,6 @@
     </style>
 
     <script>
-      // helpful for understanding dojoConfig.packages vs. dojoConfig.paths:
-      // http://www.sitepen.com/blog/2013/06/20/dojo-faq-what-is-the-difference-packages-vs-paths-vs-aliases/
       var dojoConfig = { 
         paths: {
           extras: location.pathname.replace(/\/[^/]+$/, '')
@@ -91,19 +89,6 @@
           });
 
           function addClusters(resp) {
-            // popupTemplate to work with attributes specific to this dataset
-            /*var popupTemplate = PopupTemplate({
-              'title': '',
-              'fieldInfos': [{
-                'fieldName': 'title',
-                'label': 'Title: ',
-                visible: true
-              }, {
-                'fieldName': 'image',
-                'label': 'Image: ',
-                visible: true
-              }]
-            });*/
               var popupTemplate = new PopupTemplate({
                   "title": "",
                   "fieldInfos": [{
@@ -126,32 +111,11 @@
               });
 
               var picBaseUrl = 'http://static.arcgis.com/images/Symbols/Shapes/';
-              var defaultSym = new PictureMarkerSymbol(picBaseUrl + 'GreenPin1LargeB.png', 32, 32);
+              var defaultSym = new PictureMarkerSymbol(picBaseUrl + 'GreenPin1LargeB.png', 64, 64);
               var renderer = new ClassBreaksRenderer(defaultSym, 'clusterCount');
-            /*
-            var popupTemplate = PopupTemplate({
-              'title': '',
-              'fieldInfos': [{
-                'fieldName': 'CaseNum',
-                'label': 'Case Number: ',
-                visible: true
-              }, {
-                'fieldName': 'Block',
-                'label': 'Block: ',
-                visible: true
-              }, {
-                'fieldName': 'Descrip',
-                'label': 'Description: ',
-                visible: true
-              }]
-            });
-            */
 
             // cluster layer that uses OpenLayers style clustering
             // class break renderer service
-            // http://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/CTAStationStats/FeatureServer/0
-            // simple renderer service
-            // http://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/ChicagoCrime/FeatureServer/0
             clusterLayer = new ClusterFeatureLayer({
              // 'url': 'http://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/CT2010_pts/FeatureServer/0',
               'url':'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/propectous/FeatureServer/0',
@@ -162,10 +126,11 @@
               'singleColor': '#888',
               'singleTemplate': popupTemplate,
               'useDefaultSymbol': false,
-                'zoomOnClick':false,
+                'zoomOnClick':true,
                 'showSingles':false,
                 'singleSymbol':defaultSym,
                 'singleRenderer':renderer,
+                'MODE_SNAPSHOT':true,
               'objectIdField': 'OBJECTID' // define the objectid field
             });
             //var picBaseUrl = 'http://static.arcgis.com/images/Symbols/Shapes/';
