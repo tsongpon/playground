@@ -65,7 +65,9 @@
       ) {
         urlUtils.addProxyRule({
               urlPrefix: "http://services6.arcgis.com",
-              proxyUrl: "http://192.168.50.32:9000/playground/proxy.jsp"});
+             // proxyUrl: "http://192.168.50.32:9000/playground/proxy.jsp"});
+              proxyUrl: "http://128.199.102.152:9000/playground/proxy.jsp"});
+
 
         ready(function() {
           parser.parse();
@@ -91,13 +93,33 @@
           function addClusters(resp) {
               var popupTemplate = new PopupTemplate({
                   "title": "",
-                  "fieldInfos": [{
+                  "fieldInfos": [/*{
                       "fieldName": "id",
                       "label": "Ad",
                       visible: true
-                  }, {
+                  }, */{
                       "fieldName": "title",
                       "label": "Title",
+                      visible: true
+                  }, {
+                      "fieldName": "type",
+                      "label": "Type",
+                      visible: true
+                  }, {
+                      "fieldName": "price",
+                      "label": "Price",
+                      visible: true
+                  }, {
+                      "fieldName": "rooms",
+                      "label": "Total Room",
+                      visible: true
+                  }, {
+                      "fieldName": "roomarea",
+                      "label": "Room Area",
+                      visible: true
+                  }, {
+                      "fieldName": "company",
+                      "label": "Company Name",
                       visible: true
                   }],
                   "mediaInfos": [{
@@ -105,7 +127,14 @@
                       "caption": "",
                       "type": "image",
                       "value": {
-                          "sourceURL": "http://bearing:9079/api/frontier/v1/mediacontents/{image}",
+                          "sourceURL": "http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/{companylogo}",
+                      }
+                  },{
+                      "title": "",
+                      "caption": "",
+                      "type": "image",
+                      "value": {
+                          "sourceURL": "http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/{picture}",
                       }
                   }]
               });
@@ -118,7 +147,7 @@
             // class break renderer service
             clusterLayer = new ClusterFeatureLayer({
              // 'url': 'http://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/CT2010_pts/FeatureServer/0',
-              'url':'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/propectous/FeatureServer/0',
+              'url':'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/RealEstate/FeatureServer/0',
               'distance': 100,
               'id': 'clusters',
               'labelColor': '#fff',
