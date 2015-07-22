@@ -272,8 +272,16 @@
                           <div style="padding:10px;">
                               <select id="lplist">
                                   <option value="all" selected="selected">All</option>
-                                  <option value="Hytte">Hytte</option>
+                                  <option value="Boligtomt">Boligtomt</option>
+                                  <option value="Enebolig">Enebolig</option>
+                                  <option value="Fritid/hytteanlegg">Fritid/hytteanleggg</option>
                                   <option value="Fritidsbolig">Fritidsbolig</option>
+                                  <option value="Hytte">Hytte</option>
+                                  <option value="Hyttetomt">Hyttetomt</option>
+                                  <option value="Kontor">Kontor</option>
+                                  <option value="Kontorlokale">Kontorlokale</option>
+                                  <option value="Leilighet">Leilighet</option>
+                                  <option value="Næringstomt">Næringstomt</option>
                               </select>
                           </div>
                       </td>
