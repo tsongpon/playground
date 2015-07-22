@@ -61,15 +61,22 @@
         Map, esriRequest, Graphic, Extent,
         SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, PictureMarkerSymbol, ClassBreaksRenderer,
         GraphicsLayer, SpatialReference, PopupTemplate, Point, webMercatorUtils,
-        ClusterFeatureLayer
+        ClusterFeatureLayer, on, dom
       ) {
+        var baseurl = window.location.protocol+"//"+window.location.host;
         urlUtils.addProxyRule({
               urlPrefix: "http://services6.arcgis.com",
-             // proxyUrl: "http://192.168.50.32:9000/playground/proxy.jsp"});
-              proxyUrl: "http://128.199.102.152:9000/playground/proxy.jsp"});
+              proxyUrl: baseurl+"/playground/proxy.jsp"});
+          function showLoading() {
+              esri.show(loading);
+          }
 
-
+          function hideLoading(error) {
+              esri.hide(loading);
+          }
         ready(function() {
+            //loading = dom.byId("loadingImg");  //loading image. id
+         //   loading = dom.byId("loadingImg");
           parser.parse();
           var clusterLayer;
           var popupOptions = {
@@ -83,12 +90,15 @@
               center: [10.412690012433009,59.16579977535506],
             zoom: 7
           });
-
+           // on(map, "update-start", showLoading);
+           // on(map, "update-end", hideLoading);
           map.on('load', function() {
             // hide the popup's ZoomTo link as it doesn't make sense for cluster features
             domStyle.set(query('a.action.zoomTo')[0], 'display', 'none');
             addClusters();
+             // hideLoading();
           });
+
 
           function addClusters(resp) {
               var popupTemplate = new PopupTemplate({
@@ -232,6 +242,7 @@
       <div id="map"
            data-dojo-type="dijit/layout/ContentPane"
            data-dojo-props="region:'center'">
+         <!-- <img id="loadingImg" src="images/loading.gif" style="position:absolute; right:50%; top:50%; z-index:100;" />-->
       </div>
     </div>
   </body>
