@@ -4,19 +4,39 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
     <title>Cluster</title>
-    <link rel="stylesheet" href="http://js.arcgis.com/3.11/dijit/themes/tundra/tundra.css">
-    <link rel="stylesheet" href="http://js.arcgis.com/3.11/esri/css/esri.css">
-    <style>
-      html, body { height: 100%; width:100%; margin: 0; padding: 0; }
-      #map{ margin: 0; padding: 0; }
+    <link rel="stylesheet" href="http://js.arcgis.com/3.14/dijit/themes/tundra/tundra.css">
+    <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
 
-      /* center the image in the  */
-      .esriViewPopup .gallery { margin: 0 auto !important; }
-      /* CSS for Cluster Layer */
-      #clusters_layer > circle { cursor: pointer; }
-      #clusters_layer > text { cursor: pointer; }
-    </style>
-
+      <style>
+          html,body, #map {
+              height: 100%;
+              margin: 0;
+              padding: 0;
+          }
+          .roundedCorners {
+              border-radius: 10px;
+              box-shadow: 4px 4px 8px #adadad;
+          }
+          #lppanel {
+              position: absolute;
+              height: 100px;
+              font-family: arial;
+              top: 10px;
+              margin: 5px;
+              padding: 5px;
+              z-index: 40;
+              background: #fff;
+              color: #444;
+              width: 200px;
+              right: 10px;
+              box-shadow: 0 0 5px #888;
+          }
+          /* center the image in the  */
+          .esriViewPopup .gallery { margin: 0 auto !important; }
+          /* CSS for Cluster Layer */
+          #clusters_layer > circle { cursor: pointer; }
+          #clusters_layer > text { cursor: pointer; }
+      </style>
     <script>
       var dojoConfig = { 
         paths: {
@@ -24,11 +44,13 @@
         }
       };
     </script>
-    <script src="http://js.arcgis.com/3.11/"></script>
+    <script src="http://js.arcgis.com/3.14/"></script>
     <script>
       var map;
+      require(["esri/config"], function(esriConfig) {
+          esriConfig.defaults.io.corsEnabledServers.push("http://services6.arcgis.com");
+      });
       require([
-         'esri/urlUtils',
         'dojo/parser', 
         'dojo/ready',
         'dojo/_base/array',
@@ -57,28 +79,15 @@
         'dijit/layout/ContentPane', 
         'dojo/domReady!'
       ], function(
-        urlUtils,parser, ready, arrayUtils, Color, domStyle, query,
+        parser, ready, arrayUtils, Color, domStyle, query,
         Map, esriRequest, Graphic, Extent,
         SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, PictureMarkerSymbol, ClassBreaksRenderer,
         GraphicsLayer, SpatialReference, PopupTemplate, Point, webMercatorUtils,
-        ClusterFeatureLayer, on, dom
+        ClusterFeatureLayer
       ) {
-        var baseurl = window.location.protocol+"//"+window.location.host;
-        urlUtils.addProxyRule({
-              urlPrefix: "http://services6.arcgis.com",
-              proxyUrl: baseurl+"/playground/proxy.jsp"});
-          function showLoading() {
-              esri.show(loading);
-          }
-
-          function hideLoading(error) {
-              esri.hide(loading);
-          }
         ready(function() {
-            //loading = dom.byId("loadingImg");  //loading image. id
-         //   loading = dom.byId("loadingImg");
           parser.parse();
-          var clusterLayer;
+          var clusterLayers;
           var popupOptions = {
             'markerSymbol': new SimpleMarkerSymbol('circle', 20, null, new Color([0, 0, 0, 0.25])),
             'marginLeft': '20',
@@ -90,17 +99,41 @@
               center: [10.412690012433009,59.16579977535506],
             zoom: 7
           });
-           // on(map, "update-start", showLoading);
-           // on(map, "update-end", hideLoading);
           map.on('load', function() {
-            // hide the popup's ZoomTo link as it doesn't make sense for cluster features
-            domStyle.set(query('a.action.zoomTo')[0], 'display', 'none');
-            addClusters();
-             // hideLoading();
+              // hide the popup's ZoomTo link as it doesn't make sense for cluster features
+              domStyle.set(query('a.action.zoomTo')[0], 'display', 'none');
+              clusterLayers=getCluster();
+              map.addLayer(clusterLayers);
+              query("#lplist").on("change", function(e) {
+                  var value = e.currentTarget.value;
+                  if (clusterLayers) {
+                      map.removeLayer(clusterLayers);
+                      clusterLayers = null;
+                  }
+                  switch (value) {
+                      case "all":
+                          clusterLayers = getCluster();
+                          break;
+                      default:
+                          clusterLayers = getCluster("type='" + value + "'");
+                  }
+                  if (clusterLayers) {
+                      map.addLayer(clusterLayers);
+                  }
+              });
+
+          });
+          // close the info window when the map is clicked
+          map.on('click', cleanUp);
+          // close the info window when esc is pressed
+          map.on('key-down', function(e) {
+            if (e.keyCode === 27) {
+                cleanUp();
+            }
           });
 
 
-          function addClusters(resp) {
+          function getCluster(featureQuery) {
               var popupTemplate = new PopupTemplate({
                   "title": "",
                   "fieldInfos": [/*{
@@ -153,57 +186,44 @@
               var defaultSym = new PictureMarkerSymbol(picBaseUrl + 'GreenPin1LargeB.png', 64, 64);
               var renderer = new ClassBreaksRenderer(defaultSym, 'clusterCount');
 
-            // cluster layer that uses OpenLayers style clustering
-            // class break renderer service
-            clusterLayer = new ClusterFeatureLayer({
-             // 'url': 'http://services.arcgis.com/V6ZHFr6zdgNZuVG0/ArcGIS/rest/services/CT2010_pts/FeatureServer/0',
-              'url':'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/RealEstate/FeatureServer/0',
-              'distance': 100,
-              'id': 'clusters',
-              'labelColor': '#fff',
-              'resolution': map.extent.getWidth() / map.width,
-              'singleColor': '#888',
-              'singleTemplate': popupTemplate,
-              'useDefaultSymbol': false,
-                'zoomOnClick':true,
-                'showSingles':false,
-                'singleSymbol':defaultSym,
-                'singleRenderer':renderer,
-                'MODE_SNAPSHOT':true,
-              'objectIdField': 'OBJECTID' // define the objectid field
-            });
-            //var picBaseUrl = 'http://static.arcgis.com/images/Symbols/Shapes/';
-           // var defaultSym = new PictureMarkerSymbol(picBaseUrl + 'GreenPin1LargeB.png', 32, 32);
-           // var renderer = new ClassBreaksRenderer(defaultSym, 'clusterCount');
-            var sls = SimpleLineSymbol;
-            var sms = SimpleMarkerSymbol;
-
-            var small = new sms('circle', 20,
-                        new sls(sls.STYLE_SOLID, new Color([255,191,0,0.25]), 15),
-                        new Color([255,191,0,0.5]));
-
-            var medium = new sms('circle', 30,
-                                      new sls(sls.STYLE_SOLID, new Color([148,0,211,0.25]), 15),
-                                      new Color([148,0,211,0.5]));
-            var large = new sms('circle', 50,
-                        new sls(sls.STYLE_SOLID, new Color([255,0,0,0.25]), 15),
-                        new Color([255,0,0,0.5]));
-
-            renderer.addBreak(2, 10, small);
-            renderer.addBreak(10, 25, medium);
-            renderer.addBreak(25, 5000, large);
-            // Providing a ClassBreakRenderer is also optional
-            //clusterLayer.setRenderer(renderer);
-            map.addLayer(clusterLayer);
-
-            // close the info window when the map is clicked
-            map.on('click', cleanUp);
-            // close the info window when esc is pressed
-            map.on('key-down', function(e) {
-              if (e.keyCode === 27) {
-                cleanUp();
-              }
-            });
+              var clusterLayer=null;
+             if(featureQuery) {
+                 clusterLayer= new ClusterFeatureLayer({
+                     'url': 'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/RealEstate/FeatureServer/0',
+                     'where':featureQuery,
+                     'distance': 100,
+                     'id': 'clusters',
+                     'labelColor': '#fff',
+                     'resolution': map.extent.getWidth() / map.width,
+                     'singleColor': '#888',
+                     'singleTemplate': popupTemplate,
+                     'useDefaultSymbol': false,
+                     'zoomOnClick': true,
+                     'showSingles': false,
+                     'singleSymbol': defaultSym,
+                     'singleRenderer': renderer,
+                     'MODE_SNAPSHOT': true,
+                     'objectIdField': 'OBJECTID' // define the objectid field
+                 });
+             }else{
+                 clusterLayer= new ClusterFeatureLayer({
+                     'url': 'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/RealEstate/FeatureServer/0',
+                     'distance': 100,
+                     'id': 'clusters',
+                     'labelColor': '#fff',
+                     'resolution': map.extent.getWidth() / map.width,
+                     'singleColor': '#888',
+                     'singleTemplate': popupTemplate,
+                     'useDefaultSymbol': false,
+                     'zoomOnClick': true,
+                     'showSingles': false,
+                     'singleSymbol': defaultSym,
+                     'singleRenderer': renderer,
+                     'MODE_SNAPSHOT': true,
+                     'objectIdField': 'OBJECTID' // define the objectid field
+                 });
+             }
+            return clusterLayer;
           }
 
           function cleanUp() {
@@ -236,15 +256,32 @@
     </script>
   </head>
   <body>
-    <div data-dojo-type="dijit/layout/BorderContainer"
+   <!-- <div data-dojo-type="dijit/layout/BorderContainer"
          data-dojo-props="design:'headline',gutters:false"
-         style="width: 100%; height: 100%; margin: 0;">
+         style="width: 100%; height: 100%; margin: 0;">-->
       <div id="map"
-           data-dojo-type="dijit/layout/ContentPane"
+           data-dojo-type="dijit.layout.ContentPane"
            data-dojo-props="region:'center'">
-         <!-- <img id="loadingImg" src="images/loading.gif" style="position:absolute; right:50%; top:50%; z-index:100;" />-->
+          <div id="lppanel" class="roundedCorners">
+              <table>
+                  <tr>
+                      <td style="padding:5px;">
+                          <div style="font-size: 16pt; font-weight:bold;">
+                              Choose Bolig Type:
+                          </div>
+                          <div style="padding:10px;">
+                              <select id="lplist">
+                                  <option value="all" selected="selected">All</option>
+                                  <option value="Hytte">Hytte</option>
+                                  <option value="Fritidsbolig">Fritidsbolig</option>
+                              </select>
+                          </div>
+                      </td>
+                  </tr>
+              </table>
+          </div>
       </div>
-    </div>
+    <!--</div>-->
   </body>
 </html>
 
