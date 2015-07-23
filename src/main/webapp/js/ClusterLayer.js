@@ -8,13 +8,14 @@ define([
   "esri/geometry/Point",
   "esri/graphic",
   "esri/symbols/SimpleMarkerSymbol",
+  "esri/symbols/SimpleLineSymbol",
   "esri/symbols/TextSymbol",
 
   "esri/dijit/PopupTemplate",
   "esri/layers/GraphicsLayer"
 ], function (
   declare, arrayUtils, Color, connect,
-  SpatialReference, Point, Graphic, SimpleMarkerSymbol, TextSymbol, 
+  SpatialReference, Point, Graphic, SimpleMarkerSymbol, SimpleLineSymbol, TextSymbol,
   PopupTemplate, GraphicsLayer
 ) {
   return declare([GraphicsLayer], {
@@ -46,6 +47,7 @@ define([
       
       this._clusterTolerance = options.distance || 50;
       this._clusterData = options.data || [];
+
       this._clusters = [];
       this._clusterLabelColor = options.labelColor || "#000";
       // labelOffset can be zero so handle it differently

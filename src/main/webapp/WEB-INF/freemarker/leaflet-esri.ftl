@@ -29,12 +29,12 @@
 <div id="map"></div>
 
 <script>
-  var map = L.map('map').setView([59.16579977535506,10.412690012433009], 7);
+  var map = L.map('map').setView([65.56579977535506,10.002690012433009], 5);
  /* var map = L.map('map').setView([13.7500, 100.4833], 7);*/
   L.esri.basemapLayer('Streets').addTo(map);
   var stops=L.esri.clusteredFeatureLayer({
      /* url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0',*/
-      url:'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/propectous/FeatureServer/0',
+      url:'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/RealEstate/FeatureServer/0',
       spiderfyOnMaxZoom:true,
       maxClusterRadius:100,
       removeOutsideVisibleBounds:true
@@ -53,7 +53,7 @@
   }).addTo(map);
 
   stops.bindPopup(function(feature){
-      return L.Util.template('<strong>{title}</strong><br><img height="120" src="http://bearing:9079/api/frontier/v1/mediacontents/{image}" />', feature.properties);
+      return L.Util.template('<strong>{title}</strong><br>{type}<br>price:{price}<br>total room:{rooms}<br>room area{roomarea}<br><img height="120" src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/{picture}" />', feature.properties);
   });
 </script>
 

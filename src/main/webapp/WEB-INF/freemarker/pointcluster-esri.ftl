@@ -47,9 +47,14 @@
     <script src="http://js.arcgis.com/3.14/"></script>
     <script>
       var map;
+      var loading;
       require(["esri/config"], function(esriConfig) {
           esriConfig.defaults.io.corsEnabledServers.push("http://services6.arcgis.com");
       });
+      require(["esri/map", "dojo/dom","dojo/domReady!"], function (Map, dom) {
+           loading= dom.byId("loadingImg");
+      });
+
       require([
         'dojo/parser', 
         'dojo/ready',
@@ -61,20 +66,17 @@
         'esri/request',
         'esri/graphic',
         'esri/geometry/Extent',
-
         'esri/symbols/SimpleMarkerSymbol',
         'esri/symbols/SimpleLineSymbol',
         'esri/symbols/SimpleFillSymbol',
         'esri/symbols/PictureMarkerSymbol',
         'esri/renderers/ClassBreaksRenderer',
-
         'esri/layers/GraphicsLayer',
         'esri/SpatialReference',
         'esri/dijit/PopupTemplate',
         'esri/geometry/Point',
         'esri/geometry/webMercatorUtils',
         'extras/js/ClusterFeatureLayer',
-
         'dijit/layout/BorderContainer', 
         'dijit/layout/ContentPane', 
         'dojo/domReady!'
@@ -86,8 +88,8 @@
         ClusterFeatureLayer
       ) {
         ready(function() {
-          parser.parse();
           var clusterLayers;
+          parser.parse();
           var popupOptions = {
             'markerSymbol': new SimpleMarkerSymbol('circle', 20, null, new Color([0, 0, 0, 0.25])),
             'marginLeft': '20',
@@ -99,6 +101,7 @@
               center: [10.412690012433009,59.16579977535506],
             zoom: 7
           });
+
           map.on('load', function() {
               // hide the popup's ZoomTo link as it doesn't make sense for cluster features
               domStyle.set(query('a.action.zoomTo')[0], 'display', 'none');
@@ -120,8 +123,8 @@
                   if (clusterLayers) {
                       map.addLayer(clusterLayers);
                   }
-              });
 
+              });
           });
           // close the info window when the map is clicked
           map.on('click', cleanUp);
@@ -132,8 +135,14 @@
             }
           });
 
+        map.on("update-start", function () {
+            esri.show(loading);
+        });
+        map.on("update-end", function () {
+            esri.hide(loading);
+        });
 
-          function getCluster(featureQuery) {
+        function getCluster(featureQuery) {
               var popupTemplate = new PopupTemplate({
                   "title": "",
                   "fieldInfos": [/*{
@@ -262,6 +271,7 @@
       <div id="map"
            data-dojo-type="dijit.layout.ContentPane"
            data-dojo-props="region:'center'">
+          <img id="loadingImg" src="images/loading.gif" style="position:absolute; right:50%; top:50%; z-index:100;" />
           <div id="lppanel" class="roundedCorners">
               <table>
                   <tr>

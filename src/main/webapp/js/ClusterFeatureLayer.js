@@ -282,8 +282,8 @@ define([
                             new Color([255,0,0,0.5]));
 
                 renderer.addBreak(2, 10, small);
-                renderer.addBreak(10, 25, medium);
-                renderer.addBreak(25, Infinity, large);
+                renderer.addBreak(10, 200, medium);
+                renderer.addBreak(200, Infinity, large);
                 this.setRenderer(renderer);
               }
               this._reCluster();
