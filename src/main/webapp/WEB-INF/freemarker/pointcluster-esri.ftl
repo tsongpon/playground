@@ -198,7 +198,7 @@
               var clusterLayer=null;
              if(featureQuery) {
                  clusterLayer= new ClusterFeatureLayer({
-                     'url': 'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/RealEstate/FeatureServer/0',
+                     'url': 'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/property/FeatureServer/0',
                      'where':featureQuery,
                      'distance': 100,
                      'id': 'clusters',
@@ -216,7 +216,7 @@
                  });
              }else{
                  clusterLayer= new ClusterFeatureLayer({
-                     'url': 'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/RealEstate/FeatureServer/0',
+                     'url': 'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/property/FeatureServer/0',
                      'distance': 100,
                      'id': 'clusters',
                      'labelColor': '#fff',

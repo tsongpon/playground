@@ -26,4 +26,8 @@ public class MapClusterController {
     public String renderLeafletMarkerClusterESRIStyle(Model model) {
         return "leaflet-esri2";
     }
+    @RequestMapping("test.html")
+    public String test(Model model) {
+        return "test";
+    }
 }

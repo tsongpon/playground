@@ -17,8 +17,12 @@ import java.util.logging.Logger;
 
 public class GeodataComponent {
 
-    private static final String FEATURESERVICEURI="http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/propectous/FeatureServer/0/addFeatures";
-    private static final String PROSPECTOUSURI="http://bearing:9093/api/pipek/v1/ads/search/?pretty=true&q=*&fields=id,title,media.reference,attributes.mapcoordinatelat,attributes.mapcoordinatelon&size=200";
+    //private static final String FEATURESERVICEURI="http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/propectous/FeatureServer/0/addFeatures";
+   // private static final String PROSPECTOUSURI="http://bearing:9093/api/pipek/v1/ads/search/?pretty=true&q=*&fields=id,title,media.reference,attributes.mapcoordinatelat,attributes.mapcoordinatelon&size=200";
+
+    private static final String FEATURESERVICEURI="http://services6.arcgis.com/MPFq870JSx7gki1d/ArcGIS/rest/services/property/FeatureServer/0/addFeatures";
+    private static final String PROSPECTOUSURI="http://bed.api.no/api/pipek/v1/ads/search/?q=category_id:16200&fields=id,title,media.reference,company.title,company.media.reference,attributes.price,attributes.rooms,attributes.primaryroomarea,attributes.propertytype,attributes.mapcoordinatelat,attributes.mapcoordinatelon&size=5000";
+
     public void addFeature(String features){
         Client client = Client.create();
         MultivaluedMap<String, String> params = new MultivaluedMapImpl();
@@ -83,9 +87,17 @@ public class GeodataComponent {
     public String getFeatures(JsonNode fieldsObj){
         String id=fieldsObj.get("id").get(0).asText();
         String title=fieldsObj.get("title").get(0).asText();
+
         Double lon=null;
         Double lat=null;
         String media_references="";
+        String type="";
+        Double price=0.0;
+        Double area=0.0;
+        Integer rooms=0;
+        String companyTitle="";
+        String companyLogo="";
+
         if(fieldsObj.get("attributes.mapcoordinatelon")!=null) {
             lon = fieldsObj.get("attributes.mapcoordinatelon").get(0).asDouble();
         }
@@ -96,8 +108,31 @@ public class GeodataComponent {
             media_references = fieldsObj.get("media.reference").get(0).asText();
         }
 
+        if(fieldsObj.get("attributes.propertytype")!=null) {
+            type = fieldsObj.get("attributes.propertytype").get(0).asText();
+        }
+
+        if(fieldsObj.get("attributes.price")!=null) {
+            price = fieldsObj.get("attributes.price").get(0).asDouble();
+        }
+        if(fieldsObj.get("attributes.primaryroomarea")!=null) {
+            area = fieldsObj.get("attributes.primaryroomarea").get(0).asDouble();
+        }
+        if(fieldsObj.get("attributes.rooms")!=null) {
+            rooms = fieldsObj.get("attributes.rooms").get(0).asInt();
+        }
+        if(fieldsObj.get("company.title")!=null) {
+            companyTitle = fieldsObj.get("company.title").get(0).asText();
+        }
+
+        if(fieldsObj.get("company.media.reference")!=null) {
+            companyLogo = fieldsObj.get("company.media.reference").get(0).asText();
+        }
+
         if(lat!=null&lon!=null){
-            String feature="[{'geometry' : {'x' : "+lon+", 'y' :"+lat+"},  'attributes' : {'id' :'"+id+"','title' : '"+title+"','image' : '"+media_references+"'}}]";
+            String feature="[{'geometry' : {'x' : "+lon+", 'y' :"+lat+"},  'attributes' : {'id' :'"+id+"','title' : '"+title+"'," +
+                    "'picture' : '"+media_references+"','type':'"+type+"','price':"+price+",'roomarea':"+area+",'rooms':"+rooms+"," +
+                    "'company':'"+companyTitle+"','companylogo':'"+companyLogo+"','link':''}}]";
             return  feature;
         }
         return null;

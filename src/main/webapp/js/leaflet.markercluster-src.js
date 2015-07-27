@@ -58,7 +58,6 @@ L.MarkerClusterGroup = L.FeatureGroup.extend({
 		this._needsRemoving = []; //Markers removed while we aren't on the map need to be kept track of
 		//The bounds of the currently shown area (from _getExpandedVisibleBounds) Updated on zoom/move
 		this._currentShownBounds = null;
-
 		this._queue = [];
 	},
 
@@ -1115,6 +1114,7 @@ L.MarkerCluster = L.Marker.extend({
 		if (b) {
 			this._addChild(b);
 		}
+		this._currentInfoNo=0;
 	},
 
 	//Recursively retrieve all child markers of this cluster
@@ -1760,15 +1760,37 @@ L.MarkerCluster.include({
 		this._group._spiderfied = this;
 
 		//TODO Maybe: childMarkers order by distance to center
-
-		if (childMarkers.length >= this._circleSpiralSwitchover) {
-			positions = this._generatePointsSpiral(childMarkers.length, center);
-		} else {
-			center.y += 10; //Otherwise circles look wrong
-			positions = this._generatePointsCircle(childMarkers.length, center);
+		var dflat=0;
+		var dflon=0;
+		var sameLoc=true;
+		for(var cmk in childMarkers) {
+			var mk = childMarkers[cmk];
+			if (cmk> 0) {
+				if(dflat!=mk['__parent']['_latlng']['lat']){
+					sameLoc=false
+					break;
+				}
+				if(dflon!=mk['__parent']['_latlng']['lon']){
+					sameLoc=false
+					break;
+				}
+			}
+			dflat=mk['__parent']['_latlng']['lat'];
+			dflon=mk['__parent']['_latlng']['lon'];
 		}
 
-		this._animationSpiderfy(childMarkers, positions);
+		if(sameLoc){
+			this._animationNavigatePopup(childMarkers);
+		}else {
+			if (childMarkers.length >= this._circleSpiralSwitchover) {
+				positions = this._generatePointsSpiral(childMarkers.length, center);
+			} else {
+				center.y += 10; //Otherwise circles look wrong
+				positions = this._generatePointsCircle(childMarkers.length, center);
+			}
+
+			this._animationSpiderfy(childMarkers, positions);
+		}
 	},
 
 	unspiderfy: function (zoomDetails) {
@@ -1848,6 +1870,7 @@ L.MarkerCluster.include({
 });
 
 L.MarkerCluster.include(!L.DomUtil.TRANSITION ? {
+
 	//Non Animated versions of everything
 	_animationSpiderfy: function (childMarkers, positions) {
 		var group = this._group,
@@ -1884,7 +1907,145 @@ L.MarkerCluster.include(!L.DomUtil.TRANSITION ? {
 	SVG_ANIMATION: (function () {
 		return document.createElementNS('http://www.w3.org/2000/svg', 'animate').toString().indexOf('SVGAnimate') > -1;
 	}()),
+	_animationNavigatePopup: function (childMarkers) {
 
+		var me = this,
+			group = this._group,
+			map = group._map,
+			fg = group._featureGroup,
+			thisLayerPos = map.latLngToLayerPoint(this._latlng),
+			i, m, leg, newPos;
+
+		//Add markers to map hidden at our center point
+		var newProperties=new Array();
+		for (i = childMarkers.length - 1; i >= 0; i--) {
+			newProperties.push(childMarkers[i]['feature']['properties'])
+			m = childMarkers[i];
+
+			//If it is a marker, add it now and we'll animate it out
+			if (m.setOpacity) {
+				m.setZIndexOffset(1000000); //Make these appear on top of EVERYTHING
+				m.setOpacity(0);
+				fg.addLayer(m);
+
+				m._setPos(thisLayerPos);
+			} else {
+				//Vectors just get immediately added
+				fg.addLayer(m);
+			}
+		}
+
+		group._forceLayout();
+		group._animationStart();
+
+		var initialLegOpacity = L.Path.SVG ? 0 : 0.3,
+			xmlns = L.Path.SVG_NS;
+
+		for (i = childMarkers.length - 1; i >= 0; i--) {
+			newPos = map.layerPointToLatLng(thisLayerPos);
+			m = childMarkers[i];
+			//Move marker to new position
+			m._preSpiderfyLatlng = m._latlng;
+			m.setLatLng(newPos);
+			if (m.setOpacity) {
+				m.setOpacity(1);
+			}
+			// cread popup
+			var prop=newProperties[0];
+			var slideshowContent = '';
+			for(var j in newProperties)
+			{
+				var prop=newProperties[j];
+				var img_content='<img src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/'+prop['picture']+'" />'
+				var info_content='<strong><a target="_blank" href="http://www.siste.no/vis/rubrikk/eiendomsprospekt/'+prop['id']+'.html">'+prop['title']+'</a></strong></br>';
+				info_content+='<b>price:</b>'+prop['price']+'</br>';
+				info_content+='<b>rooms:</b>'+prop['rooms']+'</br>';
+				info_content+='<b>area:</b>'+prop['roomarea']+'</br>';
+				info_content+='<b>company:</b>'+prop['company'];
+				if(j==0) {
+					slideshowContent += '<div class="image active">'+img_content+'<div class="caption">' +  info_content + '</div></div>';
+				}else{
+					slideshowContent += '<div class="image">'+img_content+'<div class="caption">' + info_content + '</div></div>';
+				}
+			}
+			// Create custom popup content
+			var popupContent =  '<div class="popup">' +
+				'<div class="slideshow">' +
+				slideshowContent +
+				'</div>' +
+				'<div class="cycle">' +
+				'<a href="#" class="prev">&laquo; Previous</a>&nbsp;&nbsp;' +
+				'<a href="#" class="next">Next &raquo;</a>' +
+				'</div>'
+			'</div>';
+
+
+			m.bindPopup(popupContent);
+			//map.on('click', '.back', function() {
+			//	alert('Hello from Toronto!');
+			//});
+
+			//L.DomUtil.get('specialPopUp').innerHTML = "new";
+			//Add Legs.
+			leg = new L.Polyline([me._latlng, newPos], { weight: 1.5, color: '#222', opacity: initialLegOpacity });
+			map.addLayer(leg);
+			m._spiderLeg = leg;
+
+			//Following animations don't work for canvas
+			if (!L.Path.SVG || !this.SVG_ANIMATION) {
+				continue;
+			}
+
+			//How this works:
+			//http://stackoverflow.com/questions/5924238/how-do-you-animate-an-svg-path-in-ios
+			//http://dev.opera.com/articles/view/advanced-svg-animation-techniques/
+
+			//Animate length
+			var length = leg._path.getTotalLength();
+			leg._path.setAttribute("stroke-dasharray", length + "," + length);
+
+			var anim = document.createElementNS(xmlns, "animate");
+			anim.setAttribute("attributeName", "stroke-dashoffset");
+			anim.setAttribute("begin", "indefinite");
+			anim.setAttribute("from", length);
+			anim.setAttribute("to", 0);
+			anim.setAttribute("dur", 0.25);
+			leg._path.appendChild(anim);
+			anim.beginElement();
+
+			//Animate opacity
+			anim = document.createElementNS(xmlns, "animate");
+			anim.setAttribute("attributeName", "stroke-opacity");
+			anim.setAttribute("attributeName", "stroke-opacity");
+			anim.setAttribute("begin", "indefinite");
+			anim.setAttribute("from", 0);
+			anim.setAttribute("to", 0.5);
+			anim.setAttribute("dur", 0.25);
+			leg._path.appendChild(anim);
+			anim.beginElement();
+		}
+		me.setOpacity(0.3);
+
+		//Set the opacity of the spiderLegs back to their correct value
+		// The animations above override this until they complete.
+		// If the initial opacity of the spiderlegs isn't 0 then they appear before the animation starts.
+		if (L.Path.SVG) {
+			this._group._forceLayout();
+
+			for (i = childMarkers.length - 1; i >= 0; i--) {
+				m = childMarkers[i]._spiderLeg;
+
+				m.options.opacity = 0.5;
+				m._path.setAttribute('stroke-opacity', 0.5);
+			}
+		}
+
+
+		setTimeout(function () {
+			group._animationEnd();
+			group.fire('spiderfied');
+		}, 200);
+	},
 	_animationSpiderfy: function (childMarkers, positions) {
 		var me = this,
 			group = this._group,
@@ -2025,18 +2186,20 @@ L.MarkerCluster.include(!L.DomUtil.TRANSITION ? {
 
 			//Animate the spider legs back in
 			if (svg) {
-				a = m._spiderLeg._path.childNodes[0];
-				a.setAttribute('to', a.getAttribute('from'));
-				a.setAttribute('from', 0);
-				a.beginElement();
+				if(m._spiderLeg!=null) {
+					a = m._spiderLeg._path.childNodes[0];
+					a.setAttribute('to', a.getAttribute('from'));
+					a.setAttribute('from', 0);
+					a.beginElement();
 
-				a = m._spiderLeg._path.childNodes[1];
-				a.setAttribute('from', 0.5);
-				a.setAttribute('to', 0);
-				a.setAttribute('stroke-opacity', 0);
-				a.beginElement();
+					a = m._spiderLeg._path.childNodes[1];
+					a.setAttribute('from', 0.5);
+					a.setAttribute('to', 0);
+					a.setAttribute('stroke-opacity', 0);
+					a.beginElement();
 
-				m._spiderLeg._path.setAttribute('stroke-opacity', 0);
+					m._spiderLeg._path.setAttribute('stroke-opacity', 0);
+				}
 			}
 		}
 
@@ -2158,6 +2321,4 @@ L.MarkerClusterGroup.include({
 		}
 	}
 });
-
-
 }(window, document));
