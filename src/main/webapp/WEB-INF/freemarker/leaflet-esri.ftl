@@ -5,12 +5,25 @@
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <#--<link rel="stylesheet" href="css/screen.css" />-->
   <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/0.7.3/leaflet.css" />
-  <script src="https://cdn.jsdelivr.net/leaflet/0.7.3/leaflet.js"></script>
+  <#--<link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/0.7.3/leaflet.css" />-->
+    <link rel="stylesheet" href="css/leaflet/leaflet.css" />
+  <#--<script src="https://cdn.jsdelivr.net/leaflet/0.7.3/leaflet.js"></script>-->
+    <script src="js/leaflet/leaflet.js"></script>
    <!-- <link rel="stylesheet" href="css/screen.css" />-->
   <!-- Load Esri Leaflet from CDN -->
-  <script src="https://cdn.jsdelivr.net/leaflet.esri/1.0.0/esri-leaflet.js"></script>
-   <!-- <link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />-->
+  <#--<script src="https://cdn.jsdelivr.net/leaflet.esri/1.0.0/esri-leaflet.js"></script>-->
+    <script src="js/leaflet/esri-leaflet.js.map"></script>
+
+    <!-- Include Leaflet.markercluster via rawgit.com, do not use in production -->
+    <#--<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/Leaflet/Leaflet.markercluster/v0.4.0/dist/MarkerCluster.Default.css">-->
+    <link rel="stylesheet" type="text/css" href="css/leaflet/MarkerCluster.Default.css">
+    <#--<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/Leaflet/Leaflet.markercluster/v0.4.0/dist/MarkerCluster.css">-->
+    <link rel="stylesheet" type="text/css" href="css/leaflet/MarkerCluster.css">
+    <#--<script src="https://cdn.rawgit.com/Leaflet/Leaflet.markercluster/v0.4.0/dist/leaflet.markercluster.js"></script>-->
+    <script src="js/leaflet/leaflet.markercluster-src.js"></script>
+    <!-- Load Clustered Feature Layer from CDN -->
+    <script src="js/leaflet/esri-leaflet-clustered-feature-layer.js.map"></script>
+    <script src='js/jquery-1.11.0.min.js'></script>
 
   <style>
     body { margin:0; padding:0; }
@@ -64,14 +77,7 @@
 </head>
 <body>
 
-<!-- Include Leaflet.markercluster via rawgit.com, do not use in production -->
-<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/Leaflet/Leaflet.markercluster/v0.4.0/dist/MarkerCluster.Default.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/Leaflet/Leaflet.markercluster/v0.4.0/dist/MarkerCluster.css">
-<#--<script src="https://cdn.rawgit.com/Leaflet/Leaflet.markercluster/v0.4.0/dist/leaflet.markercluster.js"></script>-->
-<script src="js/leaflet.markercluster-src.js"></script>
-<!-- Load Clustered Feature Layer from CDN -->
-<script src="https://cdn.jsdelivr.net/leaflet.esri.clustered-feature-layer/1.0.2/esri-leaflet-clustered-feature-layer.js"></script>
-<script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
+
 <div id="map"></div>
 <div id="query" class="leaflet-bar">
     <label>
