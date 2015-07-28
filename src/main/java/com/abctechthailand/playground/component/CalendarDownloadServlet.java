@@ -15,7 +15,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Date;
 
-@WebServlet("download.html")
+@WebServlet("download.ics")
 public class CalendarDownloadServlet extends HttpServlet {
 
     private static final int BYTES_DOWNLOAD = 4096;
@@ -33,23 +33,16 @@ public class CalendarDownloadServlet extends HttpServlet {
                 "name, e-mail address and telephone number to the broker\n" +
                 "ad-id number");
         icals.addEvent(event);
-
-        File file = new File("calendar.ics");
-        Biweekly.write(icals).go(file);
+        String calendarText=Biweekly.write(icals).go();
+        OutputStream out = response.getOutputStream();
 
         response.setContentType("text/calendar");
-        response.setContentLength((int) file.length());
-        response.setHeader( "Content-Disposition",
-                String.format("attachment; filename=\"%s\"", file.getName()));
+        response.setHeader("Content-Disposition",
+                String.format("attachment; filename=\"%s\"", "calendar.ics"));
 
-        OutputStream out = response.getOutputStream();
-        try (FileInputStream in = new FileInputStream(file)) {
-            byte[] buffer = new byte[BYTES_DOWNLOAD];
-            int length;
-            while ((length = in.read(buffer)) > 0) {
-                out.write(buffer, 0, length);
-            }
-        }
+        byte[] b = calendarText.getBytes();
+        out.write(b);
         out.flush();
+        out.close();
     }
 }

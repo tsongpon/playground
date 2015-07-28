@@ -27,7 +27,7 @@ public class HelloController{
         return "calendar";
     }
 
-    @RequestMapping(value = "/download.html")
+    @RequestMapping(value = "/download.ics")
     public void downloadCalendar(HttpServletRequest request, HttpServletResponse response) throws IOException, URISyntaxException {
         CalendarDownloadServlet fileServlet = new CalendarDownloadServlet();
         fileServlet.download(request, response);
