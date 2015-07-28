@@ -21,7 +21,7 @@ public class GeodataComponent {
    // private static final String PROSPECTOUSURI="http://bearing:9093/api/pipek/v1/ads/search/?pretty=true&q=*&fields=id,title,media.reference,attributes.mapcoordinatelat,attributes.mapcoordinatelon&size=200";
 
     private static final String FEATURESERVICEURI="http://services6.arcgis.com/MPFq870JSx7gki1d/ArcGIS/rest/services/property/FeatureServer/0/addFeatures";
-    private static final String PROSPECTOUSURI="http://bed.api.no/api/pipek/v1/ads/search/?q=category_id:16200&fields=id,title,media.reference,company.title,company.media.reference,attributes.price,attributes.rooms,attributes.primaryroomarea,attributes.propertytype,attributes.mapcoordinatelat,attributes.mapcoordinatelon&size=5000";
+    private static final String PROSPECTOUSURI="http://bed.api.no/api/pipek/v1/ads/search/?q=category_id:16300&fields=id,title,media.reference,company.title,company.media.reference,attributes.price,attributes.rooms,attributes.primaryroomarea,attributes.propertytype,attributes.mapcoordinatelat,attributes.mapcoordinatelon&size=5000";
 
     public void addFeature(String features){
         Client client = Client.create();

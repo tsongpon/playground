@@ -12,7 +12,7 @@ L.MarkerClusterGroup = L.FeatureGroup.extend({
 	options: {
 		maxClusterRadius: 80, //A cluster will cover at most this many pixels from its center
 		iconCreateFunction: null,
-
+		sliderPopupOnSameCoordinate: false,
 		spiderfyOnMaxZoom: true,
 		showCoverageOnHover: true,
 		zoomToBoundsOnClick: true,
@@ -1778,8 +1778,7 @@ L.MarkerCluster.include({
 			dflat=mk['__parent']['_latlng']['lat'];
 			dflon=mk['__parent']['_latlng']['lon'];
 		}
-
-		if(sameLoc){
+		if(sameLoc&&this._group.options.sliderPopupOnSameCoordinate){
 			this._animationNavigatePopup(childMarkers);
 		}else {
 			if (childMarkers.length >= this._circleSpiralSwitchover) {

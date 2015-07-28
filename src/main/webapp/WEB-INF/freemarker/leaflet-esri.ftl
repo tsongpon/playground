@@ -93,30 +93,58 @@
 </div>
 <script>
   var map = L.map('map').setView([65.56579977535506,10.002690012433009], 5);
+  var clusterLayer;
  /* var map = L.map('map').setView([13.7500, 100.4833], 7);*/
   L.esri.basemapLayer('Streets').addTo(map);
-  var property=L.esri.clusteredFeatureLayer({
-     /* url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0',*/
-      url:'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/property/FeatureServer/0',
-      spiderfyOnMaxZoom:true,
-      maxClusterRadius:100,
-      removeOutsideVisibleBounds:true
-      //where:"type='Enebolig'"
-      /*spiderfyOnMaxZoom:false,
-      showCoverageOnHover:true,
-      animateAddingMarkers:true,
-      disableClusteringAtZoom: 10,
-      polygonOptions: {
-          color: '#2d84c8',
-          weight: 4,
-          opacity: 1,
-          fillOpacity: 0.5
-      },*/
-    /*url:'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/test/FeatureServer/0'*/
-    /*url:'http://services6.arcgis.com/MPFq870JSx7gki1d/ArcGIS/rest/services/example/FeatureServer/0'*/
-  }).addTo(map);
 
-  property.bindPopup(function(feature){
+  function makeClusters(query) {
+      if(query) {
+          clusterLayer = L.esri.clusteredFeatureLayer({
+              /* url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0',*/
+              url: 'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/property/FeatureServer/0',
+              spiderfyOnMaxZoom: true,
+              sliderPopupOnSameCoordinate: true,
+              maxClusterRadius: 100,
+              removeOutsideVisibleBounds: true,
+              where: query,
+          }).addTo(map);
+      }else{
+          clusterLayer = L.esri.clusteredFeatureLayer({
+              /* url: 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Trimet_Transit_Stops/FeatureServer/0',*/
+              url: 'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/property/FeatureServer/0',
+              spiderfyOnMaxZoom: true,
+              sliderPopupOnSameCoordinate: true,
+              maxClusterRadius: 100,
+              removeOutsideVisibleBounds: true,
+              //where:"type='Enebolig'"
+              /*spiderfyOnMaxZoom:false,
+              showCoverageOnHover:true,
+              animateAddingMarkers:true,
+              disableClusteringAtZoom: 10,
+              polygonOptions: {
+                  color: '#2d84c8',
+                  weight: 4,
+                  opacity: 1,
+                  fillOpacity: 0.5
+              },*/
+              /*url:'http://services6.arcgis.com/MPFq870JSx7gki1d/arcgis/rest/services/test/FeatureServer/0'*/
+              /*url:'http://services6.arcgis.com/MPFq870JSx7gki1d/ArcGIS/rest/services/example/FeatureServer/0'*/
+          }).addTo(map);
+      }
+  }
+  makeClusters();
+
+  var propertyType = document.getElementById('propertyType');
+  propertyType.addEventListener('change', function(){
+      map.removeLayer(clusterLayer)
+      var q='';
+      if(propertyType.value!='') {
+         q="type='" + propertyType.value + "'";
+      }
+      makeClusters(q);
+  });
+
+  clusterLayer.bindPopup(function(feature){
       var prop=feature.properties;
       var img_content='<img  src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/'+prop['picture']+'" />'
       var info_content='<strong><a target="_blank" href="http://www.siste.no/vis/rubrikk/eiendomsprospekt/'+prop['id']+'.html">'+prop['title']+'</a></strong></br>';
@@ -155,14 +183,6 @@
       $newSlide.addClass('active').show();
       return false;
   });
-
-  var propertyType = document.getElementById('propertyType');
-  propertyType.addEventListener('change', function(){
-      if(propertyType.value!='') {
-          property.setWhere("type='" + propertyType.value + "'");
-      }
-  });
-  //map.on('click',toggleSlide(false), '.back');
 </script>
 </body>
 </html>

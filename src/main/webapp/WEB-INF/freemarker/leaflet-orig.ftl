@@ -10,7 +10,7 @@
 
   <link rel="stylesheet" href="css/MarkerCluster.css" />
   <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
-  <script src="js/leaflet.markercluster-src.js"></script>
+    <script src="https://cdn.rawgit.com/Leaflet/Leaflet.markercluster/v0.4.0/dist/leaflet.markercluster.js"></script>
   <script src="data/realworld.388.js"></script>
 </head>
 <body>
@@ -21,6 +21,7 @@
 
   var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
+            spiderfyOnMaxZoom:true,
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
           }),latlng = L.latLng(-37.821, 175.22);
 
