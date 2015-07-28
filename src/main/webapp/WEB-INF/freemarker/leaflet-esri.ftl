@@ -5,16 +5,14 @@
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <#--<link rel="stylesheet" href="css/screen.css" />-->
   <!-- Load Leaflet from CDN-->
-  <#--<link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/0.7.3/leaflet.css" />-->
-    <link rel="stylesheet" href="css/leaflet/leaflet.css" />
-  <#--<script src="https://cdn.jsdelivr.net/leaflet/0.7.3/leaflet.js"></script>-->
-    <script src="js/leaflet/leaflet.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <#--<script src="js/leaflet/leaflet.js"></script>-->
    <!-- <link rel="stylesheet" href="css/screen.css" />-->
   <!-- Load Esri Leaflet from CDN -->
   <#--<script src="https://cdn.jsdelivr.net/leaflet.esri/1.0.0/esri-leaflet.js"></script>-->
     <script src="js/leaflet/esri-leaflet.js.map"></script>
 
-    <!-- Include Leaflet.markercluster via rawgit.com, do not use in production -->
     <#--<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/Leaflet/Leaflet.markercluster/v0.4.0/dist/MarkerCluster.Default.css">-->
     <link rel="stylesheet" type="text/css" href="css/leaflet/MarkerCluster.Default.css">
     <#--<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/Leaflet/Leaflet.markercluster/v0.4.0/dist/MarkerCluster.css">-->
