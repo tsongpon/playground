@@ -131,9 +131,26 @@
               /*url:'http://services6.arcgis.com/MPFq870JSx7gki1d/ArcGIS/rest/services/example/FeatureServer/0'*/
           }).addTo(map);
       }
+      clusterLayer.bindPopup(function(feature){
+          var prop=feature.properties;
+          var img_content='<img  src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/'+prop['picture']+'" />'
+          var info_content='<strong><a target="_blank" href="http://www.siste.no/vis/rubrikk/eiendomsprospekt/'+prop['id']+'.html">'+prop['title']+'</a></strong></br>';
+          info_content+='<b>price:</b>'+prop['price']+'</br>';
+          info_content+='<b>rooms:</b>'+prop['rooms']+'</br>';
+          info_content+='<b>area:</b>'+prop['roomarea']+'</br>';
+          info_content+='<b>company:</b>'+prop['company'];
+          var slideshowContent= '<div class="image active">'+img_content+'<div class="caption">' +  info_content + '</div></div>';
+          var popupContent = '<div class="popup"><div class="slideshow">' +
+                  slideshowContent +
+                  '</div></div>';
+          return popupContent;
+          //return L.Util.template('<strong>{title}</strong><br>{type}<br>price:{price}<br>total room:{rooms}<br>room area{roomarea}<br><img height="120" src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/{picture}" />', feature.properties);
+      },{
+          closeButton: true,
+          minWidth: 320
+      });
   }
   makeClusters();
-
   var propertyType = document.getElementById('propertyType');
   propertyType.addEventListener('change', function(){
       map.removeLayer(clusterLayer)
@@ -143,26 +160,6 @@
       }
       makeClusters(q);
   });
-
-  clusterLayer.bindPopup(function(feature){
-      var prop=feature.properties;
-      var img_content='<img  src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/'+prop['picture']+'" />'
-      var info_content='<strong><a target="_blank" href="http://www.siste.no/vis/rubrikk/eiendomsprospekt/'+prop['id']+'.html">'+prop['title']+'</a></strong></br>';
-      info_content+='<b>price:</b>'+prop['price']+'</br>';
-      info_content+='<b>rooms:</b>'+prop['rooms']+'</br>';
-      info_content+='<b>area:</b>'+prop['roomarea']+'</br>';
-      info_content+='<b>company:</b>'+prop['company'];
-      var slideshowContent= '<div class="image active">'+img_content+'<div class="caption">' +  info_content + '</div></div>';
-      var popupContent = '<div class="popup"><div class="slideshow">' +
-              slideshowContent +
-              '</div></div>';
-      return popupContent;
-      //return L.Util.template('<strong>{title}</strong><br>{type}<br>price:{price}<br>total room:{rooms}<br>room area{roomarea}<br><img height="120" src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/{picture}" />', feature.properties);
-  },{
-      closeButton: true,
-      minWidth: 320
-  });
-
   $('#map').on('click', '.popup .cycle a', function() {
       var $slideshow = $('.slideshow'),
               $newSlide;
