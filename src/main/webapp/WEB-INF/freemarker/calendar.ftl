@@ -4,6 +4,10 @@
 </head>
 <body>
 <h1>CREATE CALENDAR</h1>
-    <a href="download.ics">Calendar here</a>
+    <form action="download.ics" method="post">
+        <label>Ad id: </label><input type="text" name="adId"/>
+        <input type="submit" value="Calendar here"/>
+    </form>
+    <#--<a href="download.ics">Calendar here</a>-->
 </body>
 </html>

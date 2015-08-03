@@ -13,9 +13,22 @@
         <pantheon.version>3.2.3</pantheon.version>
         <jersey.version>1.18.1</jersey.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
+        <gaia.version>1.4.17</gaia.version>
+        <joda.version>2.7</joda.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>no.api.gaia</groupId>
+            <artifactId>gaia-apiproperties</artifactId>
+            <version>${gaia.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda.version}</version>
+        </dependency>
 
         <!-- Spring 4 dependencies -->
         <dependency>
@@ -74,18 +87,6 @@
             <groupId>net.sf.biweekly</groupId>
             <artifactId>biweekly</artifactId>
             <version>0.4.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-calendar</artifactId>
-            <version>v3-rev130-1.20.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-oauth2</artifactId>
-            <version>v2-rev92-1.20.0</version>
         </dependency>
 
         <!-- == Jersey == - in order to keep the same version of the libraries -->

@@ -19,7 +19,7 @@
 
 
 <mvc:annotation-driven />
-
+    <context:component-scan base-package="com.abctechthailand.playground"/>
     <context:component-scan base-package="com.abctechthailand.playground.controller"/>
     <context:component-scan base-package="com.abctechthailand.playground.component"/>
 
@@ -37,5 +37,9 @@
         <property name="prefix" value=""/>
         <property name="suffix" value=".ftl"/>
     </bean>
+
+    <!-- Rest Template -->
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
+
 
 </beans>
