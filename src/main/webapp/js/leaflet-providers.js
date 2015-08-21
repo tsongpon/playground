@@ -293,14 +293,18 @@
 			url: '//server.arcgisonline.com/ArcGIS/rest/services/{variant}/MapServer/tile/{z}/{y}/{x}',
 			options: {
 				variant: 'World_Street_Map',
-				attribution: 'Tiles &copy; Esri'
+				attribution: '&copy; Esri'
 			},
 			variants: {
 				WorldStreetMap: {
 					options: {
+						//attribution:
+						//	'{attribution.Esri} &mdash; ' +
+						//	'Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
 						attribution:
 							'{attribution.Esri} &mdash; ' +
-							'Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+							'Source: ARGISONLINE'
+
 					}
 				},
 				DeLorme: {
@@ -371,6 +375,7 @@
 						attribution: '{attribution.Esri} &mdash; Esri, DeLorme, NAVTEQ'
 					}
 				}
+
 			}
 		},
 		OpenWeatherMap: {

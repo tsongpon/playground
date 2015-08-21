@@ -2,22 +2,23 @@
 var map;
 var markers;
 var batchSize;
+var serviceUrl;
 function initialize(divId,id){
     initMap(divId);
 }
 
 function initMap(divId){
-    var tiles = L.tileLayer.provider('Esri.WorldStreetMap', {
-        //maxZoom: 10,
-       // spiderfyOnMaxZoom:true
-    }),latlng = L.latLng(59.16579977535506,10.412690012433009);
-
+    var tiles = L.tileLayer.provider('Esri.WorldStreetMap'),latlng = L.latLng(59.16579977535506,10.412690012433009);
+   //serviceUrl= "http://" + window.location.hostname + ":9093/api/pipek/v1/ads/search";
+        //serviceUrl="http://bearing.dev.abctech-thailand.com/api/pipek/v1/ads/search";
+   serviceUrl="http://bed.snap1.api.no/api/pipek/v1/ads/search";
    map = L.map('map', {center: latlng, zoom: 4, layers: [tiles]});
-   batchSize=500;
+   batchSize=300;
 }
 function makeCluster(){
+    map.spin(true);
     $.ajax({
-            url:"http://bed.snap1.api.no/api/pipek/v1/ads/search",
+            url:serviceUrl,
             async: true,
             cache: true,
             contentType: "text/json",
@@ -42,16 +43,16 @@ function makeCluster(){
                 renderCluster(offset)
                 offset=offset+batchSize;
             }
-        });
+            map.spin(false);
+    }).error(function () {
+            map.spin(false);
+    });
 }
 
 function renderCluster(offset){
-    markers = L.markerClusterGroup();
+    markers = L.markerClusterGroup({sliderPopupOnSameCoordinate: true});
     $.ajax({
-            // url: "http://" + window.location.hostname + ":9093/api/pipek/v1/ads/search",
-            // url: "http://192.168.50.32:9093/api/pipek/v1/ads/search",
-            //url:"http://bearing.dev.abctech-thailand.com/api/pipek/v1/ads/search",
-            url:"http://bed.snap1.api.no/api/pipek/v1/ads/search",
+             url: serviceUrl,
             async: true,
             cache: true,
             contentType: "text/json",
@@ -60,7 +61,7 @@ function renderCluster(offset){
                 from:offset,
                 size:batchSize,
                 sort : [{ "id" : "asc" }],
-                _source: ["id","title","location"],
+                _source: ["id","title","location","media.reference","attributes.propertytype","attributes.price","attributes.primaryroomarea","attributes.rooms","company.title","company.media.reference"],
                 query: {
                     filtered: {
                         query: {
@@ -79,10 +80,9 @@ function renderCluster(offset){
             var points = data.hits.hits;
             //console.log('received ' + points.length + ' point');
             for (var i = 0; i < points.length; i++) {
+                String
                 addMarker(
-                    points[i]._source.location.lat,
-                    points[i]._source.location.lon,
-                    points[i]._source.title
+                    points[i]
                 );
 
             }
@@ -91,9 +91,32 @@ function renderCluster(offset){
     map.addLayer(markers);
 
 }
-function addMarker(lat, lon, title) {
-    var marker = L.marker(L.latLng(lat, lon), { title: title });
-    marker.bindPopup(title);
+function addMarker(point) {
+        var id=point._source.id;
+        var lat=point._source.location.lat;
+        var lon=point._source.location.lon;
+        var title=point._source.title;
+        var image=point._source.media[0];
+        var attributes=point._source.attributes;
+        var company=point._source.company;
+
+        var img_content="";
+        if(image!=null){
+            var img_content='<img  src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/'+image.reference+'" />'
+        }
+        var info_content='<strong><a target="_blank" href="http://www.siste.no/vis/rubrikk/eiendomsprospekt/'+id+'.html">'+title+'</a></strong></br>';
+        if(attributes!=null){
+            info_content+='<b>price:</b>'+attributes.price+'</br>';
+            info_content+='<b>rooms:</b>'+attributes.rooms+'</br>';
+            info_content+='<b>area:</b>'+attributes.primaryroomarea+'</br>';
+
+        }
+        if(company!=null) {
+            info_content += '<b>company:</b>' + company.title;
+        }
+        var popupContent = '<div class="content">' + img_content+'<div class="caption">' +  info_content + '</div></div>';
+    var marker = L.marker(L.latLng(lat, lon), { title: title,defaultPopup:popupContent }); //add extra option to give default popup content
+    marker.bindPopup(popupContent,{closeButton: true,minWidth: 320});
     markers.addLayer(marker);
 
 }
