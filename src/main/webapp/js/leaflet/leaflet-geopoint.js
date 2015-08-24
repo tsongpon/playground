@@ -8,14 +8,15 @@ function initialize(divId,id){
 }
 
 function initMap(divId){
-    var tiles = L.tileLayer.provider('Esri.WorldStreetMap'),latlng = L.latLng(59.16579977535506,10.412690012433009);
-   //serviceUrl= "http://" + window.location.hostname + ":9093/api/pipek/v1/ads/search";
+    var tiles = L.tileLayer.provider('Esri.WorldStreetMap'),latlng = L.latLng(63.0,12.0);
         //serviceUrl="http://bearing.dev.abctech-thailand.com/api/pipek/v1/ads/search";
    serviceUrl="http://bed.snap1.api.no/api/pipek/v1/ads/search";
-   map = L.map('map', {center: latlng, zoom: 4, layers: [tiles]});
+   map = L.map('map', {center: latlng, zoom: 5, layers: [tiles]});
    batchSize=300;
+
 }
 function makeCluster(){
+
     map.spin(true);
     $.ajax({
             url:serviceUrl,
@@ -36,14 +37,14 @@ function makeCluster(){
                     }
                 }
             }),
-            dataType: "json"}
+            dataType: "json"
+            }
     ).done(function(data){
             var offset = 0;
             while (offset < data.hits.total) {
                 renderCluster(offset)
-                offset=offset+batchSize;
+                offset = offset + batchSize;
             }
-            map.spin(false);
     }).error(function () {
             map.spin(false);
     });
@@ -74,22 +75,18 @@ function renderCluster(offset){
                 }
             }),
             dataType: "json"}
-    )
-        .done(function(data){
-
+    ).done(function(data){
             var points = data.hits.hits;
             //console.log('received ' + points.length + ' point');
             for (var i = 0; i < points.length; i++) {
-                String
                 addMarker(
                     points[i]
                 );
-
             }
+            map.spin(false);
+    });
 
-        });
     map.addLayer(markers);
-
 }
 function addMarker(point) {
         var id=point._source.id;
@@ -115,7 +112,20 @@ function addMarker(point) {
             info_content += '<b>company:</b>' + company.title;
         }
         var popupContent = '<div class="content">' + img_content+'<div class="caption">' +  info_content + '</div></div>';
-    var marker = L.marker(L.latLng(lat, lon), { title: title,defaultPopup:popupContent }); //add extra option to give default popup content
+
+
+        var LeafIcon = L.Icon.extend({
+            options: {
+                shadowUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-shadow.png'
+            }
+        });
+
+        var markerIcon = new LeafIcon({iconUrl: 'http://cdn.leafletjs.com/leaflet-0.7/images/marker-icon.png'});
+
+
+
+
+    var marker = L.marker(L.latLng(lat, lon), { icon: markerIcon,title: title,defaultPopup:popupContent }); //add extra option to give default popup content
     marker.bindPopup(popupContent,{closeButton: true,minWidth: 320});
     markers.addLayer(marker);
 
