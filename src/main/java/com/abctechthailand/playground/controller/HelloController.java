@@ -49,4 +49,17 @@ public class HelloController{
         }
     }
 
+    @RequestMapping(value = "/spamfree.html")
+    public String spamFree(){
+        return "spamfree";
+    }
+
+    @RequestMapping(value = "/submit.html", method = RequestMethod.POST)
+    public String submit(Model model, @RequestParam("real_name") String name,
+                         @RequestParam("real_email") String email){
+        model.addAttribute("name", name);
+        model.addAttribute("email", email);
+        return "result";
+    }
+
 }

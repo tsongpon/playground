@@ -1,0 +1,22 @@
+#test_email
+{
+    display:none;
+}
+
+form .form-submit input {
+    display: block;
+    width: 101px;
+    height: 39px;
+    background-color: transparent;
+    background-image: url("../images/submit.png");
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    padding: 39px 0 0 0;
+    border: 0;
+    cursor: pointer;
+    text-indent: -9000px;
+}
+
+form .form-submit input {
+    text-indent: 0;
+}
