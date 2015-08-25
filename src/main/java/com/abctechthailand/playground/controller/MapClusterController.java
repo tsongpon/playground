@@ -27,10 +27,20 @@ public class MapClusterController {
         return "leaflet-esri2";
     }
 
-//    @RequestMapping("geohash.html")
-//    public String renderGeohash(Model model) {
-//        return "geohash";
-//    }
+    @RequestMapping("geohashcluster0.html")
+    public String renderGeohash0(Model model) {
+        return "geohash-leaflet0";
+    }
+
+    @RequestMapping("geohashcluster1.html")
+    public String renderGeohash1(Model model) {
+        return "geohash-leaflet1";
+    }
+
+    @RequestMapping("geohashcluster2.html")
+    public String renderGeohash2(Model model) {
+        return "geohash-leaflet2";
+    }
 
     @RequestMapping("markercluster-geopoint.html")
     public String renderLeafletGeopoint(Model model) {
