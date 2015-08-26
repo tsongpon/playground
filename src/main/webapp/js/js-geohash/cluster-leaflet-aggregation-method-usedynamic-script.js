@@ -51,6 +51,8 @@ function clearGeohashCell(){
     geohashCells = new L.FeatureGroup();
 }
 function addSingleMarker(cluster){
+
+    //var bound=Geohash.bounds(cluster.key);
     $.ajax({
             url: elasticsearchUrl,
             contentType: "text/json",
@@ -66,6 +68,14 @@ function addSingleMarker(cluster){
                                 location: {
                                     top_left:cluster.cell.bounds.top_left,
                                     bottom_right:cluster.cell.bounds.bottom_right
+                                    //top_left: {
+                                    //    "lat": bound.ne.lat,
+                                    //    "lon": bound.sw.lon
+                                    //},
+                                    //bottom_right: {
+                                    //    "lat": bound.sw.lat,
+                                    //    "lon": bound.ne.lon
+                                    //}
                                 }
                             }
                         }
@@ -246,9 +256,11 @@ function addMarker(cluster) {
 }
 
 function addGeohashCell(cluster) {
+    //var southWest = L.latLng(cluster.cell.bounds.bottom_right.lat, cluster.cell.bounds.top_left.lon),
+    //    northEast = L.latLng(cluster.cell.bounds.top_left.lat, cluster.cell.bounds.bottom_right.lon),
+    //    bounds = L.latLngBounds(southWest, northEast);
 
-    var southWest = L.latLng(cluster.cell.bounds.bottom_right.lat, cluster.cell.bounds.top_left.lon),
-        northEast = L.latLng(cluster.cell.bounds.top_left.lat, cluster.cell.bounds.bottom_right.lon),
-        bounds = L.latLngBounds(southWest, northEast);
-    geohashCells.addLayer(L.rectangle(bounds, {color: "#03f", weight: 5,fillOpacity:0.01,opacity:0.01}));
+    var bound=Geohash.bounds(cluster.key);
+    bounds = L.latLngBounds(bound.sw, bound.ne);
+    geohashCells.addLayer(L.rectangle(bounds, {color: "#03f", weight: 1,fillOpacity:0.05,opacity:0.05}));
 }

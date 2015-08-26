@@ -63,6 +63,7 @@
 <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
 <#--<script type="text/javascript" src="js/js-geohash/jquery-ui.js"></script>-->
 <script type="text/javascript" src="js/js-geohash/cluster-leaflet-aggregation-method.js"></script>
+<script type="text/javascript" src="js/js-geohash/latlon-geohash.js"></script>
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
 <script src="js/leaflet/leaflet.js"></script>
 <script src="js/leaflet-providers.js"></script>
