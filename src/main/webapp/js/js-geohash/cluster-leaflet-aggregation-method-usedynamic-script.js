@@ -113,7 +113,7 @@ function makeCluster(){
     zoomLev = map.getZoom();
     if(zoomLev<=4){
         precision=1;
-    }else if(zoomLev<=7){
+    }else if(zoomLev<=4){
         precision=2;
     }else if(zoomLev<=9){
         precision=3;
