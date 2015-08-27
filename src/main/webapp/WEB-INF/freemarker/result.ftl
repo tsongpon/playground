@@ -9,6 +9,9 @@
 <body>
 <h1>RESULT SPAM FREE</h1>
     <div>
+        ${(error)!""}
+    </div>
+    <div>
         <label>Name: ${name}</label>
     </div>
     <div>

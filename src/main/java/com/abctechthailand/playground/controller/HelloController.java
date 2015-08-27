@@ -3,6 +3,8 @@ package com.abctechthailand.playground.controller;
 import com.abctechthailand.playground.PlaygroundProperties;
 import com.abctechthailand.playground.component.CalendarDownloadServlet;
 import com.abctechthailand.playground.component.FrontierComponent;
+import com.abctechthailand.playground.component.RecaptchaServlet;
+import com.abctechthailand.playground.component.VerifyRecaptcha;
 import com.abctechthailand.playground.transport.frontier.AdObjectFrontierTransport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,9 +12,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.URISyntaxException;
 
@@ -28,6 +34,9 @@ public class HelloController{
 
     @Autowired
     private PlaygroundProperties properties;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     //tell spring to call this method if someone make request to this path
     @RequestMapping("/sayhello.html")
@@ -62,4 +71,13 @@ public class HelloController{
         return "result";
     }
 
+    @RequestMapping(value = "/recaptcha.html", method = RequestMethod.POST)
+    public String submitrecaptcha(Model model, HttpServletResponse response, HttpServletRequest request) throws IOException, ServletException {
+
+        RecaptchaServlet recaptchaServlet = new RecaptchaServlet();
+        recaptchaServlet.doPost(request, response);
+        model.addAttribute("name", request.getParameter("recaptcha_name"));
+        model.addAttribute("email", request.getParameter("recaptcha_email"));
+        return "result";
+    }
 }
