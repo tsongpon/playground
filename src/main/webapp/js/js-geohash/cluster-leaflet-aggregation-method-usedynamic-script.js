@@ -88,36 +88,93 @@ function addSingleMarker(cluster){
             var lat=points[0]._source.location.lat;
             var lon=points[0]._source.location.lon;
             var marker =new  L.marker(L.latLng(lat, lon));
-            createPopup(points[0],marker);
+            createPopup(points,marker);
             markers.addLayer(marker);
 
         });
 }
 
-function createPopup(marker_info,marker){
-    var point=marker_info;
-    var id=point._source.id;
-    var title=point._source.title;
-    var image=point._source.media[0];
-    var attributes=point._source.attributes;
-    var company=point._source.company;
+function createPopup(points,marker){
 
-    var img_content="";
-    if(image!=null){
-        var img_content='<img  src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/'+image.reference+'" />'
+    if(points.length>1){
+        console.log("multiple points");
+        console.log(points);
     }
-    var info_content='<strong><a target="_blank" href="http://www.siste.no/vis/rubrikk/eiendomsprospekt/'+id+'.html">'+title+'</a></strong></br>';
-    if(attributes!=null){
-        info_content+='<b>price:</b>'+attributes.price+'</br>';
-        info_content+='<b>rooms:</b>'+attributes.rooms+'</br>';
-        info_content+='<b>area:</b>'+attributes.primaryroomarea+'</br>';
+    if(points.length==1) {
+        marker_info = points[0];
+        var point = marker_info;
+        var id = point._source.id;
+        var title = point._source.title;
+        var image = point._source.media[0];
+        var attributes = point._source.attributes;
+        var company = point._source.company;
+
+        var img_content = "";
+        if (image != null) {
+            var img_content = '<img  src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/' + image.reference + '" />'
+        }
+        var info_content = '<strong><a target="_blank" href="http://www.siste.no/vis/rubrikk/eiendomsprospekt/' + id + '.html">' + title + '</a></strong></br>';
+        if (attributes != null) {
+            info_content += '<b>price:</b>' + attributes.price + '</br>';
+            info_content += '<b>rooms:</b>' + attributes.rooms + '</br>';
+            info_content += '<b>area:</b>' + attributes.primaryroomarea + '</br>';
+
+        }
+        if (company != null) {
+            info_content += '<b>company:</b>' + company.title;
+        }
+        var popupContents = '<div class="content">' + img_content + '<div class="caption">' + info_content + '</div></div>';
+    }else{
+
+
+        var slideshowContent="";
+        var naviButton='<div class="cycle">' +
+            '<a href="#" class="prev">&laquo; Previous</a>&nbsp;&nbsp;' +
+            '<a href="#" class="next">Next &raquo;</a>' +
+            '</div>';
+
+        for(var j in points)
+        {
+            marker_info = points[j];
+            var point = marker_info;
+            var id = point._source.id;
+            var title = point._source.title;
+            var image = point._source.media[0];
+            var attributes = point._source.attributes;
+            var company = point._source.company;
+
+            var img_content = "";
+            if (image != null) {
+                var img_content = '<img  src="http://g.api.no/obscura/API/image/r1/zett/230x153unifiedrc/1437391364000/' + image.reference + '" />'
+            }
+            var info_content = '<strong><a target="_blank" href="http://www.siste.no/vis/rubrikk/eiendomsprospekt/' + id + '.html">' + title + '</a></strong></br>';
+            if (attributes != null) {
+                info_content += '<b>price:</b>' + attributes.price + '</br>';
+                info_content += '<b>rooms:</b>' + attributes.rooms + '</br>';
+                info_content += '<b>area:</b>' + attributes.primaryroomarea + '</br>';
+
+            }
+            if (company != null) {
+                info_content += '<b>company:</b>' + company.title;
+            }
+            var popupContent = '<div class="content">' + img_content + '<div class="caption">' + info_content + '</div></div>';
+
+            if(j==0) {
+                slideshowContent += '<div class="slider active">'+popupContent+naviButton+'</div>';
+            }else{
+                slideshowContent += '<div class="slider">'+popupContent+naviButton+'</div>';
+            }
+        }
+        // Create custom popup content
+        var popupContents =  '<div class="popup">' +
+            '<div class="slideshow">' +
+            slideshowContent +
+            '</div></div>';
 
     }
-    if(company!=null) {
-        info_content += '<b>company:</b>' + company.title;
-    }
-    var popupContent = '<div class="content">' + img_content+'<div class="caption">' +  info_content + '</div></div>';
-    marker.bindPopup(popupContent,{closeButton: true,minWidth: 320});
+
+
+    marker.bindPopup(popupContents,{closeButton: true,minWidth: 320});
 }
 function makeCluster(){
     zoomLev = map.getZoom();
@@ -217,7 +274,7 @@ function addMarker(cluster) {
     //var lon = cluster.center_lon.value;
     var totalChild=cluster.doc_count;
 
-    if(totalChild==1){
+    if(totalChild==1||zoomLev>13){
        addSingleMarker(cluster);
     }else{
         //var lat=(cluster.cell.bounds.bottom_right.lat+cluster.cell.bounds.top_left.lat)/2;
@@ -245,6 +302,8 @@ function addMarker(cluster) {
                 iconSize: [50, 50]
             });
         }
+
+        zoomLev
         var marker =new  L.marker(L.latLng(lat, lon), {
             icon:markerIcon});
         marker.on('click', function(e) {
