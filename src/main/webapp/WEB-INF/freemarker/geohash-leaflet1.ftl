@@ -51,6 +51,38 @@
             opacity: 0.8;
             filter: alpha(opacity=80);
         }
+
+        .content {
+            text-align:center;
+        }
+        .slideshow .slider        { display:none; }
+        .slideshow .slider.active { display:block; }
+        .content img {
+            width:100%;
+        }
+        .content .caption {
+            background:#eee;
+            padding:10px;
+        }
+        .popup .cycle {
+            padding:10px 0 20px;
+        }
+        .popup .cycle a.prev { float:left; }
+        .popup .cycle a.next { float:right; }
+
+        popup-close-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 4px 4px 0 0;
+            text-align: center;
+            width: 18px;
+            height: 14px;
+            font: 16px/14px Tahoma, Verdana, sans-serif;
+            color: #c3c3c3;
+            text-decoration: none;
+            font-weight: bold;
+        }
     </style>
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
@@ -72,6 +104,27 @@
 
     $(document).ready(function() {
         initialize('map');
+    });
+
+    $('#map').on('click', '.popup .cycle a', function() {
+        var $slideshow = $('.popup'),
+                $newSlide;
+
+        if ($(this).hasClass('prev')) {
+            $newSlide = $slideshow.find('.active').prev();
+            if ($newSlide.index() < 0) {
+                $newSlide = $('.slider').last();
+            }
+        } else {
+            $newSlide = $slideshow.find('.active').next();
+            if ($newSlide.index() < 0) {
+                $newSlide = $('.slider').first();
+            }
+        }
+
+        $slideshow.find('.active').removeClass('active').hide();
+        $newSlide.addClass('active').show();
+        return false;
     });
 </script>
 </body>
