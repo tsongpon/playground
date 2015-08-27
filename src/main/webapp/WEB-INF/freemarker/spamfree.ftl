@@ -48,7 +48,7 @@
                 <#--<input id="test_email" type="text" name="email" value=""/>-->
             </div>
             <div class="g-recaptcha"
-                 data-sitekey="6Lem5wsTAAAAABMSLFYT4Vwblqn7a331OqQfuBxL"></div>
+                 data-sitekey="6Lez5wsTAAAAACcDk2N3-twRVpRpKAuh3EZwzLpV"></div>
             <div>
                 <input type="submit" value="Send" />
             </div>
