@@ -203,9 +203,6 @@ function makeCluster(){
                 "query": {
                     "match_all": {}
                 },
-                "filter" : {
-                    "exists" : { "field" : "location" }
-                },
                 "aggs": {
                     "filtered_cells": {
                         "filter": {
@@ -258,7 +255,7 @@ function makeCluster(){
         for (var i = 0; i < clusters.length; i++) {
             addMarker(clusters[i]
             );
-           // addGeohashCell(clusters[i]);
+            //addGeohashCell(clusters[i]);
 
         }
 
