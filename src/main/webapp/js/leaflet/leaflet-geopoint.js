@@ -3,16 +3,20 @@ var map;
 var markers;
 var batchSize;
 var serviceUrl;
+var mapCenter;
+var mapZoom;
 function initialize(divId,id){
     initMap(divId);
 }
 
 function initMap(divId){
-    var tiles = L.tileLayer.provider('Esri.WorldStreetMap'),latlng = L.latLng(63.0,12.0);
+    mapCenter=L.latLng(63.0,12.0);
+    mapZoom=10;
+    var tiles = L.tileLayer.provider('Esri.WorldStreetMap');
         //serviceUrl="http://bearing.dev.abctech-thailand.com/api/pipek/v1/ads/search";
    serviceUrl="http://bed.snap1.api.no/api/pipek/v1/ads/search";
-   map = L.map('map', {center: latlng, zoom: 5, layers: [tiles]});
-   batchSize=300;
+   map = L.map('map', {center:mapCenter, zoom:mapZoom, layers: [tiles]});
+   batchSize=1000;
 
 }
 function makeCluster(){
@@ -26,13 +30,33 @@ function makeCluster(){
             type: "POST",
             data: JSON.stringify({
                 fields: [],
-                query: {
-                    filtered: {
-                        query: {
-                            match_all: {}
-                        },
-                        "filter" : {
-                            "exists" : { "field" : "location" }
+                "query": {
+                    "filtered": {
+                        "query": {
+                            "filtered": {
+                                "filter": {
+                                    "nested": {
+                                        "path": "bookings",
+                                        "filter": {
+                                            "and": {
+                                                "filters": [
+                                                    {
+                                                        "term": {
+                                                            "bookings.product": "prospectus"
+                                                        }
+                                                    },
+                                                    {
+                                                        "term": {
+                                                            "bookings.publications": "www.tb.no"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -63,13 +87,33 @@ function renderCluster(offset){
                 size:batchSize,
                 sort : [{ "id" : "asc" }],
                 _source: ["id","title","location","media.reference","attributes.propertytype","attributes.price","attributes.primaryroomarea","attributes.rooms","company.title","company.media.reference"],
-                query: {
-                    filtered: {
-                        query: {
-                            match_all: {}
-                        },
-                        "filter" : {
-                            "exists" : { "field" : "location" }
+                "query": {
+                    "filtered": {
+                        "query": {
+                            "filtered": {
+                                "filter": {
+                                    "nested": {
+                                        "path": "bookings",
+                                        "filter": {
+                                            "and": {
+                                                "filters": [
+                                                    {
+                                                        "term": {
+                                                            "bookings.product": "prospectus"
+                                                        }
+                                                    },
+                                                    {
+                                                        "term": {
+                                                            "bookings.publications": "www.tb.no"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -78,11 +122,22 @@ function renderCluster(offset){
     ).done(function(data){
             var points = data.hits.hits;
             //console.log('received ' + points.length + ' point');
+            var sumlon=0;
+            var sumlat=0;
+            var count=0;
             for (var i = 0; i < points.length; i++) {
-                addMarker(
-                    points[i]
-                );
+                if(points[i]._source.location!=null)
+                {
+                    addMarker(
+                        points[i]
+                    );
+                    sumlat=sumlat+points[i]._source.location.lat;
+                    sumlon=sumlon+points[i]._source.location.lon;
+                    count++;
+                }
             }
+            mapCenter=L.latLng(sumlat/count,sumlon/count);
+            map.panTo(mapCenter, mapZoom, {animation: true});
             map.spin(false);
     });
 
