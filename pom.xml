@@ -158,6 +158,18 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.searchbox</groupId>
+            <artifactId>jest</artifactId>
+            <version>0.1.7</version>
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>playground</finalName>
