@@ -42,8 +42,14 @@ public class MapClusterController {
         return "geohash-leaflet2";
     }
 
-    @RequestMapping("markercluster-geopoint.html")
-    public String renderLeafletGeopoint(Model model) {
-        return "leaflet-geopoint";
+    //show map clustering (by leaflet lib) on Geodata Map by giving data from elasticsearch
+    @RequestMapping("geodata_mapcluster.html")
+    public String renderMapClusterOnGeodataMap(Model model) {
+        return "geodata_mapcluster";
+    }
+    //show map clustering (by leaflet lib) on Norkart Map by giving data from elasticsearch
+    @RequestMapping("norkart_mapcluster.html")
+    public String renderMapClusterOnNorkartMap(Model model) {
+        return "norkart_mapcluster";
     }
 }
