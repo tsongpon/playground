@@ -21,13 +21,6 @@
             .content img {
                 width:100%;
             }
-            .content .caption {
-                background:#eee;
-                padding:10px;
-            }
-            .popup .cycle {
-                padding:10px 0 20px;
-            }
             .popup .cycle a.prev { float:left; }
             .popup .cycle a.next { float:right; }
 
@@ -71,7 +64,7 @@
     function initMap(divId){
         mapCenter=L.latLng(63.0,12.0);
         mapZoom=10;
-        serviceUrl="http://bed.snap1.api.no/api/pipek/v1/ads/search";
+        serviceUrl="http://bed.api.no/api/pipek/v1/ads/search";
         batchSize=1000;
         map = new WebatlasMap('map', {customer: 'WAPI_JS_V3_WikiDemo'});
         map.setView(mapCenter,mapZoom);
